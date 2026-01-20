@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Servicio de Base de Datos
+  db:
+    image: mysql:8.0
+    container_name: prematricula_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: prematricula_info
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - prematricula_net
+
+  # Servicio Aplicación Web
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: prematricula_web
+    restart: always
+    ports:
+      - "3000:3000" # PUERTO A CAMBIAR SEGUN SEA NECESARIO 
+    environment:
+      DATABASE_URL: mysql://root:${DB_PASSWORD}@db:3306/prematricula_info
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+    depends_on:
+      - db
+    networks:
+      - prematricula_net
+
+volumes:
+  mysql_data:
+
+networks:
+  prematricula_net:

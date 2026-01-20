@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums (Igual que antes)
+enum RolUsuario {
+  estudiante
+  secretaria
+  director
+}
+
+enum TipoCurso {
+  EG
+  EE
+  ES
+}
+
+enum Semestre {
+  I
+  II
+  EXT
+}
+
+// --- MODELOS ---
+
+model Usuario {
+  id                Int        @id @default(autoincrement())
+  correo_inst       String     @unique @db.VarChar(100)
+  imagen_perfil     String?    @db.Text
+  rol               RolUsuario @default(estudiante)
+  codigo_estudiante String?    @db.VarChar(11)
+  nombres           String?    @db.VarChar(100)
+  apellido_paterno  String?    @db.VarChar(50)
+  apellido_materno  String?    @db.VarChar(50)
+  creado_en         DateTime   @default(now())
+  ultimo_acceso     DateTime   @updatedAt
+
+  sesiones      Session[]
+  prematriculas Prematricula[]
+
+  
+  @@map("Usuario") 
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  usuarioId    Int
+  usuario      Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  expires      DateTime
+  creado_en    DateTime @default(now())
+  activa       Boolean  @default(true)
+
+  @@map("Session")
+}
+
+model Departamento {
+  id     Int     @id @default(autoincrement())
+  nombre String  @db.VarChar(150)
+  cursos Curso[]
+
+  @@map("Departamento")
+}
+
+model Curso {
+  codigo       Int       @id
+  ciclo        Int
+  nombre       String    @db.VarChar(100)
+  tipo         TipoCurso
+  creditos     Int
+  hrs_teoria   Int       @default(0)
+  hrs_practica Int       @default(0)
+  hrs_lab      Int       @default(0)
+  dpt_que_atiende Int?
+  
+  departamento Departamento? @relation(fields: [dpt_que_atiende], references: [id], onDelete: SetNull)
+
+  prerequisitos Prerequisito[] @relation("CursoPreRequisitos")
+  sucesores     Prerequisito[] @relation("PreRequisitoDe")
+  cursos_en_curricula    CurriculaCurso[] 
+  cursos_prematriculados CursoPrematricula[] 
+
+  @@map("Curso")
+}
+
+model Prerequisito {
+  id               Int @id @default(autoincrement())
+  curso_codigo     Int
+  pre_curso_codigo Int
+
+  curso        Curso @relation("CursoPreRequisitos", fields: [curso_codigo], references: [codigo], onDelete: Cascade)
+  prerequisito Curso @relation("PreRequisitoDe", fields: [pre_curso_codigo], references: [codigo], onDelete: Cascade)
+
+  @@unique([curso_codigo, pre_curso_codigo])
+  @@map("Prerequisito")
+}
+
+model TipoMatricula {
+  id     Int            @id @default(autoincrement())
+  nombre String         @db.VarChar(30)
+  
+  prematriculas Prematricula[]
+
+  @@map("TipoMatricula")
+}
+
+model Curricula {
+  id          Int    @id @default(autoincrement())
+  nombre      String @db.VarChar(150)
+  anio        Int
+  descripcion String @db.Text
+  
+  cursos_asociados CurriculaCurso[]
+
+  @@map("Curricula")
+}
+
+model CurriculaCurso {
+  id           Int @id @default(autoincrement())
+  curricula_id Int
+  curso_codigo Int
+  
+  curricula Curricula @relation(fields: [curricula_id], references: [id], onDelete: Cascade)
+  curso     Curso     @relation(fields: [curso_codigo], references: [codigo], onDelete: Cascade)
+  
+  @@unique([curricula_id, curso_codigo])
+  @@map("CurriculaCurso")
+}
+
+model CursoPrematricula {
+  id_prematricula Int
+  curso_codigo    Int
+  numero_vez      Int @default(1)
+
+  prematricula Prematricula @relation(fields: [id_prematricula], references: [id], onDelete: Cascade)
+  curso        Curso        @relation(fields: [curso_codigo], references: [codigo], onDelete: Cascade)
+  
+  @@id([id_prematricula, curso_codigo])
+  @@map("CursoPrematricula")
+}
+
+model Prematricula {
+  id                Int      @id @default(autoincrement())
+  id_user           Int
+  semestre          Semestre
+  anio              Int
+  tipo_de_matricula Int
+  creado            DateTime @default(now())
+  timestamp         DateTime @updatedAt
+
+  usuario        Usuario       @relation(fields: [id_user], references: [id], onDelete: Cascade)
+  tipo_matricula TipoMatricula @relation(fields: [tipo_de_matricula], references: [id], onDelete: Restrict)
+  
+  cursos_prematriculados CursoPrematricula[] 
+  
+  @@unique([id_user, semestre, anio])
+  @@map("Prematricula")
+}
+
+model FechasAcademicas {
+  id           Int      @id @default(autoincrement())
+  semestre     String   
+  tipo         String   
+  fecha_inicio DateTime
+  fecha_fin    DateTime
+  activo       Boolean  @default(false)
+  creado       DateTime @default(now())
+  actualizado  DateTime @updatedAt
+
+
+  @@map("fechas_academicas")
+}
