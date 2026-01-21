@@ -31,8 +31,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      # OJO: Aquí uso la variable directa para que coincida con lo que Docker espera
-      DATABASE_URL: mysql://root:${DB_PASSWORD}@db:3306/prematricula_info
+      DATABASE_URL: ${DATABASE_URL}
       NEXTAUTH_URL: ${NEXTAUTH_URL}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
