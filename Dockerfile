@@ -18,6 +18,22 @@ WORKDIR /app
 COPY --from=base /app/node_modules ./node_modules
 COPY . .
 
+# --- INICIO DE CAMBIOS ---
+# 1. Definimos los ARG para recibir los valores desde Coolify/Docker Compose
+ARG DATABASE_URL
+ARG NEXTAUTH_SECRET
+ARG NEXTAUTH_URL
+ARG GOOGLE_CLIENT_ID
+ARG GOOGLE_CLIENT_SECRET
+
+# 2. Los asignamos como variables de entorno para que Next.js/Prisma los vean
+ENV DATABASE_URL=${DATABASE_URL}
+ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+ENV NEXTAUTH_URL=${NEXTAUTH_URL}
+ENV GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+ENV GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+# --- FIN DE CAMBIOS ---
+
 # Generar cliente de Prisma
 RUN npx prisma generate
 
