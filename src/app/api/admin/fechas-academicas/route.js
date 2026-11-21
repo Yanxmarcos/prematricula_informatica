@@ -1,9 +1,12 @@
+import { currentUser, unauthorized } from '@/lib/authorization';
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export async function GET() {
+  const authenticatedUser = await currentUser(['secretaria', 'director']);
+  if (!authenticatedUser) return unauthorized();
   try {
     const fechas = await prisma.fechasAcademicas.findMany({
       orderBy: [
@@ -19,7 +22,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error al obtener fechas académicas:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   } finally {
@@ -28,6 +31,8 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  const authenticatedUser = await currentUser(['secretaria', 'director']);
+  if (!authenticatedUser) return unauthorized();
   try {
     const body = await request.json();
     const { semestre, tipo, fecha_inicio, fecha_fin, activo } = body;
@@ -56,7 +61,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('Error al crear fecha académica:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   } finally {

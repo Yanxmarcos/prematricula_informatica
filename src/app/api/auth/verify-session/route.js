@@ -1,12 +1,15 @@
 import { prisma } from "@/lib/prisma"
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/lib/auth'
 
 export async function POST(request) {
   try {
+    const userSession = await getServerSession(authOptions)
     const { sessionToken } = await request.json()
 
-    if (!sessionToken) {
+    if (!sessionToken || sessionToken !== userSession?.sessionToken) {
       return new Response(JSON.stringify({ error: "Session token requerido" }), {
-        status: 400,
+        status: 401,
       })
     }
 
@@ -15,6 +18,7 @@ export async function POST(request) {
     const activeSession = await prisma.session.findFirst({
       where: {
         sessionToken: sessionToken,
+        usuarioId: Number(userSession.user.id),
         activa: true,
         expires: { gt: new Date() }
       }

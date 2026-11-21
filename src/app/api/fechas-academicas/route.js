@@ -26,7 +26,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error al obtener fechas académicas:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   } finally {

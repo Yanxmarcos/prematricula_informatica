@@ -1,13 +1,16 @@
+import { currentUser, unauthorized } from '@/lib/authorization';
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
 
 export async function PUT(request) {
+  const authenticatedUser = await currentUser(['estudiante']);
+  if (!authenticatedUser) return unauthorized();
   try {
     const data = await request.json();
     const { userId, nombres, apellido_paterno, apellido_materno, codigo_estudiante } = data;
 
-    if (!userId) {
+    if (Number(userId) !== authenticatedUser.id) {
       return NextResponse.json(
         { message: "ID de usuario no proporcionado" },
         { status: 400 }
@@ -24,7 +27,7 @@ export async function PUT(request) {
     // Actualizar usuario en la BD
     const usuarioActualizado = await prisma.usuario.update({
       where: {
-        id: parseInt(userId),
+        id: authenticatedUser.id,
       },
       data: {
         nombres: nombres,
@@ -36,7 +39,7 @@ export async function PUT(request) {
 
     return NextResponse.json({
       success: true,
-      data: usuarioActualizado,
+      data: { id: usuarioActualizado.id, nombres: usuarioActualizado.nombres, apellido_paterno: usuarioActualizado.apellido_paterno, apellido_materno: usuarioActualizado.apellido_materno, codigo_estudiante: usuarioActualizado.codigo_estudiante },
       message: "Perfil actualizado correctamente"
     });
 

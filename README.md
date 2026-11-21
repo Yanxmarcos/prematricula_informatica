@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Prematrícula Informática
 
-## Getting Started
+Aplicación web de prematrícula académica creada como proyecto de software para la Escuela Profesional de Informática de la Universidad Nacional de Trujillo. Este repositorio muestra una implementación de portafolio y **no es un portal oficial de la universidad**.
 
-First, run the development server:
+## Funciones
+
+- Acceso con código estudiantil y contraseña asignada individualmente.
+- Consulta de cursos, créditos y prerrequisitos.
+- Registro y consulta del historial de prematrículas.
+- Panel administrativo con estadísticas, fechas académicas y gestión de sesiones.
+- Acceso a la API restringido por sesión, rol y propiedad del registro.
+
+## Tecnologías
+
+Next.js 15 (App Router), React 19, Tailwind CSS 4, NextAuth 4, Prisma 6, MySQL 8 y Docker Compose.
+
+## Desarrollo local
+
+Requisitos: Node.js 20 o superior y una base de datos MySQL 8. Copia `.env.example` a `.env.local`, configura credenciales **propias y nuevas**, y ejecuta:
 
 ```bash
+npm ci
+npx prisma generate
+npx prisma db push
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+El esquema define las tablas, pero no incluye datos reales de estudiantes ni un catálogo académico de ejemplo. Para acceder, primero debes crear un usuario de prueba en tu propia base de datos y asignarle un código; después puedes generar una contraseña segura con:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+node --env-file=.env.local scripts/set-user-password.mjs CODIGO_ESTUDIANTE
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+El comando imprime una contraseña una sola vez. Entrégala al usuario por un canal privado. Para el panel administrativo, configura el rol `secretaria` o `director` en la base de datos antes de iniciar sesión. **No uses datos personales reales en entornos de demostración.**
 
-## Learn More
+## Configuración
 
-To learn more about Next.js, take a look at the following resources:
+Consulta [.env.example](.env.example). Las credenciales y las exportaciones de la base de datos no deben añadirse a Git. Si despliegas la aplicación, define las variables en tu plataforma y limita el acceso a MySQL. El archivo `docker-compose.yml` espera también `DB_PASSWORD` para el servicio local de MySQL.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Seguridad y alcance
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Las rutas privadas validan la sesión activa en la base de datos, el rol y la propiedad de cada prematrícula. El acceso con código estudiantil como contraseña predeterminada está deshabilitado. Para una instalación institucional se necesitan además políticas de aprovisionamiento y recuperación de cuentas, pruebas integrales, revisión de infraestructura y autorización para tratar datos personales.
 
-## Deploy on Vercel
+## Comprobación
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run lint
+npm run build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Proyecto de portafolio. Las marcas institucionales utilizadas en la interfaz identifican el contexto académico y no implican respaldo oficial.

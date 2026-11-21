@@ -1,3 +1,4 @@
+import { currentUser, unauthorized } from '@/lib/authorization';
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
@@ -8,10 +9,12 @@ function getHoraPeru() {
 }
 
 export async function POST(request) {
+  const authenticatedUser = await currentUser(['estudiante']);
+  if (!authenticatedUser) return unauthorized();
   try {
     const { userId, semestre, anio, tipoMatricula, cursos } = await request.json();
 
-    if (!userId || !semestre || !anio || !tipoMatricula || !cursos || cursos.length === 0) {
+    if (Number(userId) !== authenticatedUser.id || !semestre || !anio || !tipoMatricula || !Array.isArray(cursos) || cursos.length === 0) {
       return NextResponse.json(
         { error: 'Faltan datos requeridos' },
         { status: 400 }
@@ -28,7 +31,7 @@ export async function POST(request) {
 
     // Verificar que el usuario existe
     const usuario = await prisma.usuario.findUnique({
-      where: { id: userId }
+      where: { id: authenticatedUser.id }
     });
 
     if (!usuario) {
@@ -65,7 +68,7 @@ export async function POST(request) {
       }
     });
 
-    if (cursosData.length !== cursos.length) {
+    if (new Set(codigosCursos).size !== cursos.length || cursosData.length !== cursos.length) {
       return NextResponse.json(
         { error: 'Algunos cursos no fueron encontrados' },
         { status: 404 }
@@ -96,7 +99,7 @@ export async function POST(request) {
     // Verificar si ya existe una prematrícula para este usuario en este período
     const prematriculaExistente = await prisma.prematricula.findFirst({
       where: {
-        id_user: userId,
+        id_user: authenticatedUser.id,
         semestre: semestre,
         anio: anio
       }
@@ -114,7 +117,7 @@ export async function POST(request) {
     const result = await prisma.$transaction(async (tx) => {
       const nuevaPrematricula = await tx.prematricula.create({
         data: {
-          id_user: userId,
+          id_user: authenticatedUser.id,
           semestre: semestre,
           anio: anio,
           tipo_de_matricula: tipoMatriculaRecord.id,
@@ -154,7 +157,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('Error al crear prematrícula:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   } finally {
@@ -163,13 +166,15 @@ export async function POST(request) {
 }
 
 export async function GET(request) {
+  const authenticatedUser = await currentUser(['estudiante']);
+  if (!authenticatedUser) return unauthorized();
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
     const semestre = searchParams.get('semestre');
     const anio = searchParams.get('anio');
 
-    if (!userId) {
+    if (Number(userId) !== authenticatedUser.id) {
       return NextResponse.json(
         { error: 'Se requiere el ID del usuario' },
         { status: 400 }
@@ -177,7 +182,7 @@ export async function GET(request) {
     }
 
     const where = {
-      id_user: parseInt(userId)
+      id_user: authenticatedUser.id
     };
 
     if (semestre) where.semestre = semestre;
@@ -206,7 +211,7 @@ export async function GET(request) {
   } catch (error) {
     console.error('Error al obtener prematrículas:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   } finally {
@@ -216,12 +221,14 @@ export async function GET(request) {
 
 // DELETE - Eliminar prematrícula
 export async function DELETE(request) {
+  const authenticatedUser = await currentUser(['estudiante']);
+  if (!authenticatedUser) return unauthorized();
   try {
     const { searchParams } = new URL(request.url);
     const prematriculaId = searchParams.get('id');
     const userId = searchParams.get('userId');
 
-    if (!prematriculaId || !userId) {
+    if (!prematriculaId || Number(userId) !== authenticatedUser.id) {
       return NextResponse.json(
         { error: 'Se requiere el ID de la prematrícula y el ID del usuario' },
         { status: 400 }
@@ -232,7 +239,7 @@ export async function DELETE(request) {
     const prematricula = await prisma.prematricula.findFirst({
       where: {
         id: parseInt(prematriculaId),
-        id_user: parseInt(userId)
+        id_user: authenticatedUser.id
       }
     });
 
@@ -255,7 +262,7 @@ export async function DELETE(request) {
   } catch (error) {
     console.error('Error al eliminar prematrícula:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   } finally {

@@ -1,9 +1,12 @@
+import { currentUser, unauthorized } from '@/lib/authorization';
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export async function PUT(request, { params }) {
+  const authenticatedUser = await currentUser(['secretaria', 'director']);
+  if (!authenticatedUser) return unauthorized();
   try {
 
     const { id } = await params;
@@ -38,7 +41,7 @@ export async function PUT(request, { params }) {
   } catch (error) {
     console.error('Error al actualizar fecha académica:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   } finally {
@@ -47,6 +50,8 @@ export async function PUT(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
+  const authenticatedUser = await currentUser(['secretaria', 'director']);
+  if (!authenticatedUser) return unauthorized();
   try {
 
     const { id } = await params;
@@ -64,7 +69,7 @@ export async function DELETE(request, { params }) {
   } catch (error) {
     console.error('Error al eliminar fecha académica:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   } finally {

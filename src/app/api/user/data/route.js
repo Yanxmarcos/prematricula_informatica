@@ -1,10 +1,13 @@
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { PrismaClient } from "@prisma/client"
+import { currentUser, unauthorized } from '@/lib/authorization'
 
 const prisma = new PrismaClient()
 
 export async function GET() {
+  const authenticatedUser = await currentUser();
+  if (!authenticatedUser) return unauthorized();
   try {
     const session = await getServerSession(authOptions)
     

@@ -4,6 +4,7 @@ import Providers from "@/components/Providers";
 import { AppProvider } from "@/contexts/AppContext";
 import SessionCleanupInitializer from "@/components/SessionCleanupInitializer";
 import { Suspense } from 'react';
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,10 +31,11 @@ export default function RootLayout({ children }) {
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <AppProvider>
-            <SessionCleanupInitializer />
+            {/* <SessionCleanupInitializer /> */}
             {children}
           </AppProvider>
         </Providers>
+        <Footer />
       </body>
     </html>
     </Suspense>

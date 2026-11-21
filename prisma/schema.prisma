@@ -33,17 +33,17 @@ model Usuario {
   correo_inst       String     @unique @db.VarChar(100)
   imagen_perfil     String?    @db.Text
   rol               RolUsuario @default(estudiante)
-  codigo_estudiante String?    @db.VarChar(11)
+  codigo_estudiante String?    @unique @db.VarChar(11)
   nombres           String?    @db.VarChar(100)
   apellido_paterno  String?    @db.VarChar(50)
   apellido_materno  String?    @db.VarChar(50)
+  contraseña        String?    @db.VarChar(255)
   creado_en         DateTime   @default(now())
   ultimo_acceso     DateTime   @updatedAt
 
   sesiones      Session[]
   prematriculas Prematricula[]
 
-  
   @@map("Usuario") 
 }
 

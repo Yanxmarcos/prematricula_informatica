@@ -1,9 +1,12 @@
+import { currentUser, unauthorized } from '@/lib/authorization';
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export async function GET(request) {
+  const authenticatedUser = await currentUser(['secretaria', 'director']);
+  if (!authenticatedUser) return unauthorized();
   try {
     const { searchParams } = new URL(request.url);
     const semestre = searchParams.get('semestre');
@@ -157,7 +160,7 @@ export async function GET(request) {
   } catch (error) {
     console.error('Error al obtener estadísticas:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   } finally {

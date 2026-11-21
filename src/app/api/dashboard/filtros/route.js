@@ -1,9 +1,12 @@
+import { currentUser, unauthorized } from '@/lib/authorization';
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export async function GET() {
+  const authenticatedUser = await currentUser(['secretaria', 'director']);
+  if (!authenticatedUser) return unauthorized();
   try {
     // Obtener semestres y años únicos
     const prematriculas = await prisma.prematricula.findMany({
@@ -43,7 +46,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error al obtener filtros:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   } finally {

@@ -1,14 +1,17 @@
+import { currentUser, unauthorized } from '@/lib/authorization';
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export async function GET(request) {
+  const authenticatedUser = await currentUser(['estudiante']);
+  if (!authenticatedUser) return unauthorized();
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
 
-    if (!userId) {
+    if (Number(userId) !== authenticatedUser.id) {
       return NextResponse.json(
         { error: 'Se requiere el ID del usuario' },
         { status: 400 }
@@ -16,7 +19,7 @@ export async function GET(request) {
     }
 
     const usuario = await prisma.usuario.findUnique({
-      where: { id: parseInt(userId) }
+      where: { id: authenticatedUser.id }
     });
 
     if (!usuario) {
@@ -28,7 +31,7 @@ export async function GET(request) {
 
     const prematriculas = await prisma.prematricula.findMany({
       where: {
-        id_user: parseInt(userId)
+        id_user: authenticatedUser.id
       },
       include: {
         tipo_matricula: true,
@@ -95,7 +98,7 @@ export async function GET(request) {
   } catch (error) {
     console.error('Error al obtener historial:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   } finally {

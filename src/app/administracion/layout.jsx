@@ -14,12 +14,12 @@ export default function AdministracionLayout({ children }) {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  useSimpleSessionCheck();
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.replace("/");
-    }
-  }, [status, router]);
+  // useSimpleSessionCheck();
+  // useEffect(() => {
+  //   if (status === "unauthenticated") {
+  //     router.replace("/");
+  //   }
+  // }, [status, router]);
 
   if (status === "loading" || appLoading) {
     return (

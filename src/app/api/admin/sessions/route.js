@@ -2,8 +2,10 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { SessionService } from "@/lib/sessionService"
+import { currentUser, unauthorized } from '@/lib/authorization'
 
 export async function GET() {
+  if (!await currentUser(['secretaria', 'director'])) return unauthorized();
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user || (session.user.rol !== 'secretaria' && session.user.rol !== 'director')) {
@@ -34,7 +36,7 @@ export async function GET() {
       }
     })
 
-    return new Response(JSON.stringify(sessions), {
+    return new Response(JSON.stringify(sessions.map(({ sessionToken, ...safe }) => safe)), {
       status: 200,
     })
   } catch (error) {
@@ -46,6 +48,7 @@ export async function GET() {
 }
 
 export async function DELETE(request) {
+  if (!await currentUser(['secretaria', 'director'])) return unauthorized();
   try {
     const session = await getServerSession(authOptions)
 
@@ -120,6 +123,7 @@ export async function DELETE(request) {
 }
 
 export async function POST() {
+  if (!await currentUser(['secretaria', 'director'])) return unauthorized();
   try {
     const session = await getServerSession(authOptions)
 

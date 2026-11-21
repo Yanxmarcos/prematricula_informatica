@@ -1,15 +1,9 @@
-import { ContactRound, Mail, Facebook, Phone, Clock, HelpCircle, ExternalLink, ChevronDown, ChevronUp } from "lucide-react"
-import { useState } from "react"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { Mail, Facebook, Phone, Clock, ExternalLink, MapPin } from "lucide-react";
 
-export default function Footer() {
-  const [showDevelopers, setShowDevelopers] = useState(false);
-  const handleHelpClick = () => {
-    // Modal de ayuda, implementación pendiente ... fe
-    // Modal de ayuda, implementación pendiente ... fe
-    // Modal de ayuda, implementación pendiente ... fe
-    console.log("Abrir modal de ayuda");
-  };
-
+const Footer = () => {
   const externalLinks = [
     { name: "Página Oficial Informática", url: "https://inf.unitru.edu.pe/" },
     { name: "Aula Virtual UNT", url: "https://aulavirtual2.unitru.edu.pe/login/index.php" },
@@ -18,220 +12,344 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="relative mt-16 bg-gradient-to-br from-[#1E232E] via-[#1B264F] to-[#1E232E] border-t border-[#4A6CF7]/20">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4A6CF7] to-transparent"></div>
+    <footer className="relative z-10 bg-[#0a0e1a] pt-16 md:pt-20 lg:pt-24 pb-8 border-t border-primary/20">
+      {/* Gradiente superior */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
       
-      <div className="container mx-auto px-6 py-12">
-        {/* Botón de Ayuda */}
-        <div className="flex justify-center mb-12 animate-pulse">
-          <button 
-            onClick={handleHelpClick}
-            className="group bg-gradient-to-r from-[#4A6CF7] to-blue-500 hover:from-blue-500 hover:to-[#4A6CF7] text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center space-x-3 text-lg font-semibold"
-          >
-            <HelpCircle className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300" />
-            <span>¿Necesitas Ayuda?</span>
-            <div className="w-2 h-2 bg-white/30 rounded-full animate-ping"></div>
-          </button>
-        </div>
-
-        {/* Footer Principal */}
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8 mb-8">
-          {/* UNT Info */}
-          <div className="animate-fade-up [animation-delay:100ms]">
-            <div className="flex items-center mb-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-[#4A6CF7]/20 to-blue-500/20 rounded-2xl flex items-center justify-center mr-3 border border-[#4A6CF7]/30">
-                <img src="/logo_info.webp" alt="Logo" className="w-10 h-10" />
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="-mx-4 flex flex-wrap">
+          {/* Columna 1: Logo y descripción */}
+          <div className="w-full px-4 md:w-1/2 lg:w-4/12 xl:w-5/12">
+            <div className="mb-12 max-w-[360px] lg:mb-16">
+              <Link href="/" className="mb-8 inline-block">
+                <div className="flex items-center">
+                  <img 
+                    src="/logo_info.webp" 
+                    alt="Logo Informática UNT" 
+                    className="w-12 h-12 mr-3"
+                  />
+                  <div>
+                    <h3 className="text-xl font-bold text-white">Universidad Nacional de Trujillo</h3>
+                    <p className="text-sm text-primary font-medium">Escuela Profesional de Informática</p>
+                  </div>
+                </div>
+              </Link>
+              <p className="mb-9 text-base leading-relaxed text-muted-foreground">
+                Formando profesionales en informática con excelencia académica y compromiso social para el desarrollo de soluciones innovadoras que impacten al mundo.
+              </p>
+              <div className="flex items-center space-x-4">
+                <a
+                  href="https://www.facebook.com/profile.php?id=61569647381199"
+                  aria-label="Facebook"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground duration-300 hover:text-primary transition-colors"
+                >
+                  <Facebook className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://inf.unitru.edu.pe/"
+                  aria-label="Página Web"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground duration-300 hover:text-primary transition-colors"
+                >
+                  <ExternalLink className="w-5 h-5" />
+                </a>
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-white">Universidad Nacional de Trujillo</h3>
-                <p className="text-sm text-[#4A6CF7]">Escuela Profesional de Informática</p>
-              </div>
-            </div>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              Formando profesionales en informática con excelencia académica y compromiso social para el
-              desarrollo de soluciones innovadoras que impacten al mundo.
-            </p>
-          </div>
-
-          {/* Enlaces Rápidos */}
-          <div className="animate-fade-up [animation-delay:200ms]">
-            <h4 className="text-white font-semibold mb-4 flex items-center">
-              <ExternalLink className="w-4 h-4 mr-2 text-[#4A6CF7]" />
-              Enlaces Externos
-            </h4>
-            <ul className="space-y-3">
-              {externalLinks.map((item, i) => (
-                <li key={i}>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-gray-300 hover:text-[#4A6CF7] transition-all duration-300 text-sm flex items-center group hover:translate-x-1"
-                  >
-                    <div className="w-2 h-2 bg-[#4A6CF7]/50 rounded-full mr-3 group-hover:bg-[#4A6CF7] transition-colors"></div>
-                    {item.name}
-                    <ExternalLink className="w-3 h-3 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contacto */}
-          <div className="animate-fade-up [animation-delay:300ms]">
-            <h4 className="text-white font-semibold mb-4">Contacto</h4>
-            <div className="space-y-4">
-              <ContactoItem
-                icon={<Phone className="w-4 h-4" />}
-                bg="bg-green-500/20"
-                iconColor="text-green-400"
-                text="924 079 049"
-                sub="Secretaría Académica"
-                borderColor="border-green-500/30"
-              />
-              <ContactoItem
-                icon={<Mail className="w-4 h-4" />}
-                bg="bg-[#4A6CF7]/20"
-                iconColor="text-[#4A6CF7]"
-                text="informatica@unitru.edu.pe"
-                sub="Información General"
-                borderColor="border-[#4A6CF7]/30"
-              />
-              <ContactoItem
-                icon={<Clock className="w-4 h-4" />}
-                bg="bg-purple-500/20"
-                iconColor="text-purple-400"
-                text="Lun-Vie: 7:00am a 2:45pm"
-                sub="Horario de Atención"
-                borderColor="border-purple-500/30"
-              />
             </div>
           </div>
 
-          {/* Red Social: solo Facebook */}
-          <div className="animate-fade-up [animation-delay:400ms]">
-            <h4 className="text-white font-semibold mb-4">Síguenos</h4>
-            <a
-              href="https://www.facebook.com/profile.php?id=61569647381199"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center space-x-3 bg-gradient-to-r from-blue-600/20 to-blue-500/20 border border-blue-500/30 hover:border-blue-400 px-4 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group"
-            >
-              <Facebook className="w-5 h-5 text-blue-400 group-hover:text-blue-300 transition-colors" />
-              <div>
-                <p className="text-white text-sm font-medium">Facebook</p>
-                <p className="text-gray-400 text-xs">@Ingeniería Informática - UNT</p>
-              </div>
-              <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-blue-300 transition-colors" />
-            </a>
-            
-            <div className="mt-4 p-3 bg-[#1B264F]/50 rounded-lg border border-[#4A6CF7]/20">
-              <p className="text-xs text-gray-400 mb-1">Síguenos para:</p>
-              <ul className="text-xs text-gray-300 space-y-1">
-                <li>• Noticias y eventos</li>
-                <li>• Logros estudiantiles</li>
-                <li>• Convocatorias importantes</li>
+          {/* Columna 2: Enlaces útiles */}
+          <div className="w-full px-4 sm:w-1/2 md:w-1/2 lg:w-2/12 xl:w-2/12">
+            <div className="mb-12 lg:mb-16">
+              <h2 className="mb-10 text-xl font-bold text-white">
+                Enlaces Útiles
+              </h2>
+              <ul>
+                {externalLinks.map((link) => (
+                  <li key={link.name}>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mb-4 inline-block text-base text-muted-foreground duration-300 hover:text-primary transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
+
+          {/* Columna 3: Contacto */}
+          <div className="w-full px-4 md:w-1/2 lg:w-2/12 xl:w-2/12">
+            <div className="mb-12 lg:mb-16">
+              <h2 className="mb-10 text-xl font-bold text-white">
+                Contacto
+              </h2>
+              <ul className="space-y-4">
+                {/* <li className="flex items-start">
+                  <Phone className="w-5 h-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-white text-sm font-medium">924 079 049</p>
+                    <p className="text-muted-foreground text-xs">Secretaría</p>
+                  </div>
+                </li> */}
+                                <li className="flex items-start">
+                  <MapPin className="w-5 h-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-white text-sm font-medium">Av. Juan Pablo II</p>
+                    <p className="text-muted-foreground text-xs">Ciudad Universitaria - Trujillo</p>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <Mail className="w-5 h-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-white text-sm font-medium">informatica@unitru.edu.pe</p>
+                    <p className="text-muted-foreground text-xs">Correo Institucional</p>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <Clock className="w-5 h-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-white text-sm font-medium">Lun-Vie: 7:00am a 2:45pm</p>
+                    <p className="text-muted-foreground text-xs">Horario de Atención</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Columna 4: Redes Sociales */}
+          <div className="w-full px-4 md:w-1/2 lg:w-4/12 xl:w-3/12">
+            <div className="mb-12 lg:mb-16">
+              <h2 className="mb-10 text-xl font-bold text-white">
+                Redes
+              </h2>
+              <a
+                href="https://www.facebook.com/profile.php?id=61569647381199"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center w-full space-x-3 bg-primary/10 border border-primary/30 hover:border-primary px-4 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 group"
+              >
+                <Facebook className="w-5 h-5 text-primary group-hover:text-primary/80 transition-colors" />
+                <div>
+                  <p className="text-white text-sm font-medium">Facebook</p>
+                  <p className="text-muted-foreground text-xs">@Ingeniería Informática - UNT</p>
+                </div>
+                <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors ml-auto" />
+              </a>
+            </div>
+          </div>
         </div>
 
+        {/* Línea divisoria */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+        
         {/* Copyright */}
-        <div className="text-center mt-8 pt-6 pb-6 border-t border-[#4A6CF7]/20">
-          <p className="text-gray-400 text-sm">
-            © 2026 Universidad Nacional de Trujillo - Escuela Profesional de Informática. Todos los derechos reservados.
+        <div className="py-8">
+          <p className="text-center text-base text-muted-foreground">
+            © 2026 Universidad Nacional de Trujillo - Escuela Profesional de Informática.
+            <br className="sm:hidden" />
           </p>
         </div>
+      </div>
 
-        <div className="relative mb-8">
-          <div className="border-t border-[#4A6CF7]/20"></div>
-          <div className="absolute inset-0 flex justify-center">
-            <div className="w-20 h-px bg-gradient-to-r from-transparent via-[#4A6CF7] to-transparent"></div>
-          </div>
-        </div>
-
-        
-        {/* Créditos del Equipo de Desarrollo */}
-        <div className="text-center animate-fade-up [animation-delay:500ms]">
-          <button 
-            onClick={() => setShowDevelopers(!showDevelopers)}
-            className="text-gray-400 hover:text-gray-300 text-xs flex items-center justify-center mx-auto transition-colors duration-300 group"
+      {/* Decoración de fondo */}
+      <div className="absolute right-0 top-14 z-[-1]">
+        <svg
+          width="55"
+          height="99"
+          viewBox="0 0 55 99"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle opacity="0.8" cx="49.5" cy="49.5" r="49.5" fill="#2563eb" />
+          <mask
+            id="mask0_94:899"
+            style={{ maskType: "alpha" }}
+            maskUnits="userSpaceOnUse"
+            x="0"
+            y="0"
+            width="99"
+            height="99"
           >
-            <div className="w-4 h-4 bg-gray-600/50 rounded mr-2 flex items-center justify-center group-hover:bg-gray-500/50 transition-colors">
-              <svg className="w-2 h-2 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <span>Equipo de Desarrollo</span>
-            {showDevelopers ? (
-              <ChevronUp className="w-3 h-3 ml-1 transition-transform duration-300" />
-            ) : (
-              <ChevronDown className="w-3 h-3 ml-1 transition-transform duration-300" />
-            )}
-          </button>
-          
-          {/* Contenido expandible */}
-          <div className={`overflow-hidden transition-all duration-500 ${showDevelopers ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
-            <div className="grid md:grid-cols-4 gap-5 max-w-4xl mx-auto">
-
-              <div className="group bg-gradient-to-br from-[#4A6CF7]/5 to-blue-500/5 border border-[#4A6CF7]/10 rounded-xl p-4 hover:border-[#4A6CF7]/30 transition-all duration-300 hover:shadow-sm hover:shadow-[#4A6CF7]/10">
-                <div className="w-8 h-8 bg-gradient-to-br from-[#4A6CF7] to-blue-500 rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-white font-bold text-xs">YC</span>
-                </div>
-                <h5 className="text-white font-medium text-sm mb-1">Yanxmarcos Chan Vásquez</h5>
-                <p className="text-[#4A6CF7] text-xs mb-2">yanxmarcoschan@outlook.com</p>
-                {/* <button className="text-gray-400 hover:text-[#4A6CF7] text-xs transition-colors duration-300 flex items-center justify-center mx-auto space-x-1">
-                  <ContactRound className="w-3 h-3" />
-                  <span>Contactar</span>
-                </button> */}
-              </div>
-
-              <div className="group bg-gradient-to-br from-[#4A6CF7]/5 to-blue-500/5 border border-[#4A6CF7]/10 rounded-xl p-4 hover:border-[#4A6CF7]/30 transition-all duration-300 hover:shadow-sm hover:shadow-[#4A6CF7]/10">
-                <div className="w-8 h-8 bg-gradient-to-br from-[#4A6CF7] to-blue-500 rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-white font-bold text-xs">EI</span>
-                </div>
-                <h5 className="text-white font-medium text-sm mb-1">Eliaser Isai Avila Zamudio</h5>
-                <p className="text-[#4A6CF7] text-xs mb-2">eliaseravilazamudio@gmail.com</p>
-              </div>
-
-              <div className="group bg-gradient-to-br from-[#4A6CF7]/5 to-blue-500/5 border border-[#4A6CF7]/10 rounded-xl p-4 hover:border-[#4A6CF7]/30 transition-all duration-300 hover:shadow-sm hover:shadow-[#4A6CF7]/10">
-                <div className="w-8 h-8 bg-gradient-to-br from-[#4A6CF7] to-blue-500 rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-white font-bold text-xs">JB</span>
-                </div>
-                <h5 className="text-white font-medium text-sm mb-1">Jim Becerra Gutierrez</h5>
-                <p className="text-[#4A6CF7] text-xs mb-2">jbecerrag@unitru.edu.pe</p>
-              </div>
-              
-              <div className="group bg-gradient-to-br from-[#4A6CF7]/5 to-blue-500/5 border border-[#4A6CF7]/10 rounded-xl p-4 hover:border-[#4A6CF7]/30 transition-all duration-300 hover:shadow-sm hover:shadow-[#4A6CF7]/10">
-                <div className="w-8 h-8 bg-gradient-to-br from-[#4A6CF7] to-blue-500 rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-white font-bold text-xs">JB</span>
-                </div>
-                <h5 className="text-white font-medium text-sm mb-1">Farid Cayetano Morillas</h5>
-                <p className="text-[#4A6CF7] text-xs mb-2">fcayetanomorillas@gmail.com</p>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        
+            <circle
+              opacity="0.8"
+              cx="49.5"
+              cy="49.5"
+              r="49.5"
+              fill="#2563eb"
+            />
+          </mask>
+          <g mask="url(#mask0_94:899)">
+            <circle
+              opacity="0.8"
+              cx="49.5"
+              cy="49.5"
+              r="49.5"
+              fill="url(#paint0_radial_94:899)"
+            />
+            <g opacity="0.8" filter="url(#filter0_f_94:899)">
+              <circle cx="53.8676" cy="26.2061" r="20.3824" fill="white" />
+            </g>
+          </g>
+          <defs>
+            <filter
+              id="filter0_f_94:899"
+              x="12.4852"
+              y="-15.1763"
+              width="82.7646"
+              height="82.7646"
+              filterUnits="userSpaceOnUse"
+              colorInterpolationFilters="sRGB"
+            >
+              <feFlood floodOpacity="0" result="BackgroundImageFix" />
+              <feBlend
+                mode="normal"
+                in="SourceGraphic"
+                in2="BackgroundImageFix"
+                result="shape"
+              />
+              <feGaussianBlur
+                stdDeviation="10.5"
+                result="effect1_foregroundBlur_94:899"
+              />
+            </filter>
+            <radialGradient
+              id="paint0_radial_94:899"
+              cx="0"
+              cy="0"
+              r="1"
+              gradientUnits="userSpaceOnUse"
+              gradientTransform="translate(49.5 49.5) rotate(90) scale(53.1397)"
+            >
+              <stop stopOpacity="0.47" />
+              <stop offset="1" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
+      <div className="absolute bottom-24 left-0 z-[-1]">
+        <svg
+          width="79"
+          height="94"
+          viewBox="0 0 79 94"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            opacity="0.3"
+            x="-41"
+            y="26.9426"
+            width="66.6675"
+            height="66.6675"
+            transform="rotate(-22.9007 -41 26.9426)"
+            fill="url(#paint0_linear_94:889)"
+          />
+          <rect
+            x="-41"
+            y="26.9426"
+            width="66.6675"
+            height="66.6675"
+            transform="rotate(-22.9007 -41 26.9426)"
+            stroke="url(#paint1_linear_94:889)"
+            strokeWidth="0.7"
+          />
+          <path
+            opacity="0.3"
+            d="M50.5215 7.42229L20.325 1.14771L46.2077 62.3249L77.1885 68.2073L50.5215 7.42229Z"
+            fill="url(#paint2_linear_94:889)"
+          />
+          <path
+            d="M50.5215 7.42229L20.325 1.14771L46.2077 62.3249L76.7963 68.2073L50.5215 7.42229Z"
+            stroke="url(#paint3_linear_94:889)"
+            strokeWidth="0.7"
+          />
+          <path
+            opacity="0.3"
+            d="M17.9721 93.3057L-14.9695 88.2076L46.2077 62.325L77.1885 68.2074L17.9721 93.3057Z"
+            fill="url(#paint4_linear_94:889)"
+          />
+          <path
+            d="M17.972 93.3057L-14.1852 88.2076L46.2077 62.325L77.1884 68.2074L17.972 93.3057Z"
+            stroke="url(#paint5_linear_94:889)"
+            strokeWidth="0.7"
+          />
+          <defs>
+            <linearGradient
+              id="paint0_linear_94:889"
+              x1="-41"
+              y1="21.8445"
+              x2="36.9671"
+              y2="59.8878"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#2563eb" stopOpacity="0.62" />
+              <stop offset="1" stopColor="#2563eb" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient
+              id="paint1_linear_94:889"
+              x1="25.6675"
+              y1="95.9631"
+              x2="-42.9608"
+              y2="20.668"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#2563eb" stopOpacity="0" />
+              <stop offset="1" stopColor="#2563eb" stopOpacity="0.51" />
+            </linearGradient>
+            <linearGradient
+              id="paint2_linear_94:889"
+              x1="20.325"
+              y1="-3.98039"
+              x2="90.6248"
+              y2="25.1062"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#2563eb" stopOpacity="0.62" />
+              <stop offset="1" stopColor="#2563eb" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient
+              id="paint3_linear_94:889"
+              x1="18.3642"
+              y1="-1.59742"
+              x2="113.9"
+              y2="80.6826"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#2563eb" stopOpacity="0" />
+              <stop offset="1" stopColor="#2563eb" stopOpacity="0.51" />
+            </linearGradient>
+            <linearGradient
+              id="paint4_linear_94:889"
+              x1="61.1098"
+              y1="62.3249"
+              x2="-8.82468"
+              y2="58.2156"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#2563eb" stopOpacity="0.62" />
+              <stop offset="1" stopColor="#2563eb" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient
+              id="paint5_linear_94:889"
+              x1="65.4236"
+              y1="65.0701"
+              x2="24.0178"
+              y2="41.6598"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#2563eb" stopOpacity="0" />
+              <stop offset="1" stopColor="#2563eb" stopOpacity="0.51" />
+            </linearGradient>
+          </defs>
+        </svg>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-function ContactoItem({ icon, bg, iconColor, text, sub, borderColor }) {
-  return (
-    <div className="flex items-center text-gray-300 text-sm group hover:text-white transition-colors duration-300">
-      <div className={`w-10 h-10 ${bg} ${borderColor} border rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300`}>
-        <div className={`${iconColor} group-hover:scale-110 transition-transform duration-300`}>
-          {icon}
-        </div>
-      </div>
-      <div>
-        <p className="font-medium group-hover:text-[#4A6CF7] transition-colors duration-300">{text}</p>
-        <p className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">{sub}</p>
-      </div>
-    </div>
-  )
-}
+export default Footer;
